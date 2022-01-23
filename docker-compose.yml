@@ -1,0 +1,56 @@
+version: '3.1'
+
+services:
+
+  collector:
+    build: ./collector
+    depends_on:
+      - mariadb
+    restart: always
+
+  mariadb:
+    image: mariadb:latest
+    expose:
+      - 3306
+    volumes:
+      - ./db:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
+    environment:
+       MARIADB_ALLOW_EMPTY_PASSWORD: 'no'
+       MARIADB_ROOT_PASSWORD: root
+       MARIADB_USER: test
+       MARIADB_PASSWORD: testpw
+       MARIADB_DATABASE: testdb
+
+  traefik:
+    image: traefik:v2.4
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    ports:
+      - "443:443"
+      - "8080:8080"
+      - "3000:3000"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:80"
+      # forward 3000 -> 80
+      - "--entrypoints.web.address=:3000"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      # end forward 3000 -> 80
+      - "--entrypoints.websecure.http.tls=true"
+
+  web:
+    build: ./web
+    volumes: 
+      - ./web:/var/www/html/
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web-router.rule=Host(`web.docker.localhost`)"
+      - "traefik.http.routers.web-router.tls=True"
+      - "traefik.http.routers.web-router.entrypoints=web"
+      # expose port 80
+      - "traefik.http.services.web-service.loadbalancer.server.port=80"
