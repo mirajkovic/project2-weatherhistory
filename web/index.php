@@ -3,12 +3,42 @@
 <head>
 <style>
 .error {color: #FF0000;}
+
+table {
+  width: 70%;
+  border: 1px solid black;
+  border-collapse: collapse;
+  overflow: auto;
+  margin-top:  20px;
+  
+}
+
+th {
+  height: 40px;
+  background-color: #CAAEA8;
+  color: black;
+}
+tr:nth-child(even) {background-color: #D8CFCF;}
+
+.header {
+  background-color: #B88A8A;
+  text-align: center;
+  padding: 5px;
+  border: 1px solid black;
+}
+
+body {
+  background-color: #F6F3F3;
+  
+}
+
 </style>
 </head>
 <body>
 
-
-<h1>Weather history</h1>
+<div class="header">
+<center><h1>Weather history</h1></center>
+</div>
 
 <?php
 
@@ -46,15 +76,15 @@ function test_input($data) {
 }
 ?>
 
-
+<center>
 <p>Welcome to the weather history website, you can see the weather conditions of several cities.</p>
-<p>If you want to see the results for a particular city, please select your desired city and Click the "Submit" button </p>
-<p>You will see the weather information for your selected City, have fun !".</p>
+<p>If you want to see the results for a particular city, please select your desired city and click the "Submit" button </p>
+<p>You will see the weather information for your selected City, have fun!</p>
 
 <p><span class="error">* required field</span></p>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
 
-   Citys:
+   Cities:
   <input type="radio" name="city" <?php if (isset($city) && $city=="Frankfurt") echo "checked";?> value="Frankfurt">Frankfurt
   <input type="radio" name="city" <?php if (isset($city) && $city=="Tokio") echo "checked";?> value="Tokio">Tokio
   <input type="radio" name="city" <?php if (isset($city) && $city=="Duesseldorf") echo "checked";?> value="Duesseldorf">Duesseldorf
@@ -65,6 +95,7 @@ function test_input($data) {
   <br><br>
   <input type="submit" name="submit" value="Submit">  
 </form>
+</center>
 
 
 <?php
@@ -74,11 +105,11 @@ function test_input($data) {
 
 <table border="1" align="center">
 <tr>
-  <td>City</td>
-  <td>Wind Speed in MPH</td>
-  <td>Temperature in °C</td>
-  <td>Pressure in inches Hg</td>
-  <td>Time</td>
+  <th><b>City</b></th>
+  <th><b>Wind Speed in MPH</b></th>
+  <th><b>Temperature in °C</b></th>
+  <th><b>Pressure in inches Hg</b></th>
+  <th><b>Time</b></th>
 </tr>
 
 
